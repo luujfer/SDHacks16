@@ -7,46 +7,20 @@ var mapbox = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
     accessToken: 'pk.eyJ1IjoibHV1amZlciIsImEiOiJjaXRybDZ5aGQwM3F4MnpvYjAyNjkwa2g5In0.ldAylypFz6krWMbkt2Jw-g'
 }).addTo(map);
 
-var GoogleSearch = L.Control.extend({
-      onAdd: function() {
-        var element = document.createElement("input");
+    // create the geocoding control and add it to the map
+    var searchControl = L.esri.Geocoding.geosearch().addTo(map);
 
-        element.id = "searchBox";
+    // create an empty layer group to store the results and add it to the map
+    var results = L.layerGroup().addTo(map);
 
-        return element;
-      }
+    // listen for the results event and add every result to the map
+    searchControl.on("results", function(data) {
+        results.clearLayers();
+        for (var i = data.results.length - 1; i >= 0; i--) {
+            results.addLayer(L.marker(data.results[i].latlng));
+        }
     });
 
-    (new GoogleSearch).addTo(map);
-
-    var input = document.getElementById("searchBox");
-
-    var searchBox = new google.maps.places.SearchBox(input);
-
-    searchBox.addListener('places_changed', function() {
-      var places = searchBox.getPlaces();
-
-      if (places.length == 0) {
-        return;
-      }
-
-      var group = L.featureGroup();
-
-      places.forEach(function(place) {
-
-        // Create a marker for each place.
-        console.log(places);
-        console.log(place.geometry.location.lat() + " / " + place.geometry.location.lng());
-        var marker = L.marker([
-          place.geometry.location.lat(),
-          place.geometry.location.lng()
-        ]);
-        group.addLayer(marker);
-      });
-
-      group.addTo(map);
-      map.fitBounds(group.getBounds());
-});
 
 map.locate({setView:true}); 
 

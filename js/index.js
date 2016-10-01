@@ -9,3 +9,16 @@ var mapbox = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
 
 map.locate({setView: true}); 
 
+function onLocationFound(e) {
+	var radius = e.accuracy / 2;
+	L.circle(e.latlng, radius).addTo(map); //add an initial circle to the current location of the user
+	currLocation = e;
+}
+
+map.on('locationfound', onLocationFound); //locates the user's location on start up
+
+function onLocationError(e) { //any errors that occur with getting the user's location
+	alert(e.message);
+}
+
+map.on('locationerror', onLocationError);

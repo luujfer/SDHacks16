@@ -7,7 +7,43 @@ var mapbox = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
     accessToken: 'pk.eyJ1IjoibHV1amZlciIsImEiOiJjaXRybDZ5aGQwM3F4MnpvYjAyNjkwa2g5In0.ldAylypFz6krWMbkt2Jw-g'
 }).addTo(map);
 
-map.locate({setView: true}); 
+var GooglePlacesSearchBox = L.Control.extend({
+  onAdd: function() {
+    var element = document.createElement("input");
+    element.id = "searchBox";
+    return element;
+  }
+});
+(new GooglePlacesSearchBox).addTo(map);
+
+var input = document.getElementById("searchBox");
+var searchBox = new google.maps.places.SearchBox(input);
+
+searchBox.addListener('places_changed', function() {
+  var places = searchBox.getPlaces();
+
+  if (places.length == 0) {
+    return;
+  }
+
+  var group = L.featureGroup();
+
+  places.forEach(function(place) {
+
+    // Create a marker for each place.
+    var marker = L.marker([
+      place.geometry.location.lat(),
+      place.geometry.location.lng()
+    ]);
+    group.addLayer(marker);
+  });
+
+  group.addTo(map);
+  map.fitBounds(group.getBounds());
+
+});
+
+map.locate({setView:true, enableHighAccuracy:true}); 
 
 function onLocationFound(e) {
 	var radius = e.accuracy / 2;
@@ -22,3 +58,4 @@ function onLocationError(e) { //any errors that occur with getting the user's lo
 }
 
 map.on('locationerror', onLocationError);
+

@@ -7,16 +7,24 @@ var mapbox = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
     accessToken: 'pk.eyJ1IjoibHV1amZlciIsImEiOiJjaXRybDZ5aGQwM3F4MnpvYjAyNjkwa2g5In0.ldAylypFz6krWMbkt2Jw-g'
 }).addTo(map); */
 
-var cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
-    cloudmade = new L.TileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {attribution: cloudmadeAttribution});
-
-var map = new L.Map('mapid').addLayer(cloudmade).setView(new L.LatLng(48.5, 2.5), 15);
-
-var bingGeocoder = new L.Control.BingGeocoder('Aht8b2dNJ5rtqYl_-Jj1l6WU1b2zLRRXu_Apz--2R6Ahj8-PQ14t5u6IkOvmBVrq');
-
-map.addControl(bingGeocoder);
 
 
+var map = L.map('mapid').setView([45.5165, -122.6764], 12);
+    var tiles = L.esri.basemapLayer("Streets").addTo(map);
+
+    // create the geocoding control and add it to the map
+    var searchControl = L.esri.Geocoding.geosearch().addTo(map);
+
+    // create an empty layer group to store the results and add it to the map
+    var results = L.layerGroup().addTo(map);
+
+    // listen for the results event and add every result to the map
+    searchControl.on("results", function(data) {
+        results.clearLayers();
+        for (var i = data.results.length - 1; i >= 0; i--) {
+            results.addLayer(L.marker(data.results[i].latlng));
+        }
+    });
 map.locate({setView:true}); 
 
 

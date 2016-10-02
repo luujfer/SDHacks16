@@ -37,5 +37,14 @@ function onLocationError(e) { //any errors that occur with getting the user's lo
 
 map.on('locationerror', onLocationError);
 
-var searchCtrl = L.control.fuseSearch();
-searchCtrl.addTo(map);
+new L.Control.GPlaceAutocomplete().addTo(map);
+
+new L.Control.GPlaceAutocomplete({
+  position: "topleft",
+  callback: function(location){
+    map.panTo(location);
+  }
+})
+.addTo(map);
+
+

@@ -10,7 +10,7 @@ var mapbox = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
 var cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
     cloudmade = new L.TileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {attribution: cloudmadeAttribution});
 
-var map = new L.Map('map').addLayer(cloudmade).setView(new L.LatLng(48.5, 2.5), 15);
+var map = new L.Map('mapid').addLayer(cloudmade).setView(new L.LatLng(48.5, 2.5), 15);
 
 var bingGeocoder = new L.Control.BingGeocoder('Aht8b2dNJ5rtqYl_-Jj1l6WU1b2zLRRXu_Apz--2R6Ahj8-PQ14t5u6IkOvmBVrq');
 
